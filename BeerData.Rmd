@@ -18,13 +18,14 @@ library(openintro)
 library(highcharter)
 library(dplyr)
 library(tidyverse)
+library(plotly)
 
 
 
 ```
 
 ```{r}
-data <- read.csv("~/Desktop/R/BeerProject/data.csv")
+data <- read.csv("~/Documents/GitHub/beer-data/data.csv")
 ```
 
 
@@ -38,7 +39,7 @@ stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
 ```
 
 ```{r}
-mycolors <- c("blue","#FFC125","darkgreen","darkorange")
+mycolors <- c("green","#FFC125","darkgreen","darkorange")
 ```
 
 Home
@@ -57,7 +58,7 @@ color = 'olivedrab')
 ### Highest Brewery
 ```{r}
 valueBox(max(stateCount$brewery_state),
-         icon = 'glyphicon-exclamation-sign')
+         icon = 'icon-beer')
 ```
 
 ### Overall Average Score
@@ -73,20 +74,66 @@ gauge(round(mean(data$rating_score),
                          colors = c('red','yellow','green')))
 ```
 
+### Global Average Score
+
+```{r}
+gauge(round(mean(data$global_rating_score),
+            digits = 2),
+            min = 0,
+            max = 5,
+            gaugeSectors(success = c(0,2),
+                         warning = c(2,4),
+                         danger = c(4,5),
+                         colors = c('red','yellow','green')))
+```
+
 
 ### Total Number of Check-Ins
 ```{r}
 valueBox(length(data$beer_name),
-         icon = 'glyphicon glyphicon-plane')
+         icon = 'glyphicon glyphicon-leaf')
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Top Breweries With Minimum 5 Samples
+### Top 10 Breweries With Minimum 5 Samples
 
 ```{r}
 
+breweriesFormatted <- data %>% select('brewery_name','rating_score') 
+  
+breweriesFormatted <- setNames(aggregate(breweriesFormatted[,2], list(breweriesFormatted$brewery_name), mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_name', 'AverageRating'))  
+
+breweriesFormatted<- breweriesFormatted[order(-breweriesFormatted$AverageRating), ]
+
+topBreweries <- breweriesFormatted
+topBreweries <- breweriesFormatted[order(-topBreweries$AverageRating), ]
+
+countBreweries <- data %>% group_by(brewery_name) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+mergedData <-
+  full_join(topBreweries,countBreweries, by = 'brewery_name') 
+
+mergedData <- filter(mergedData, count > 5) %>%
+  arrange(desc(AverageRating)) 
+
+mergedData <- setNames(mergedData, c('Brewery','AverageRating','Count')) 
+  
+mergedData <-  head(mergedData, 10)
+
+
+
+
+topBreweryPlot <- plot_ly(mergedData, 
+                          x = ~Brewery, 
+                          y = ~AverageRating,
+                          type = 'bar') %>%
+layout(showlegend = FALSE)
+                          
+topBreweryPlot
           
 ```
 
