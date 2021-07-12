@@ -1,5 +1,5 @@
 ---
-title: "Marcin Cencek"
+title: "Beer Analytics"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -39,68 +39,6 @@ stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
 ```
 
 ```{r}
-mycolors <- c("green","#FFC125","darkgreen","darkorange")
-```
-
-Home
-==================
-
-Row
-------------------
-
-### Data
-
-```{r}
-valueBox(paste('Data July 2021'),
-color = 'olivedrab')
-```
-
-### Highest Brewery
-```{r}
-valueBox(max(stateCount$brewery_state),
-         icon = 'icon-beer')
-```
-
-### Overall Average Score
-
-```{r}
-gauge(round(mean(data$rating_score),
-            digits = 2),
-            min = 0,
-            max = 5,
-            gaugeSectors(success = c(0,2),
-                         warning = c(2,4),
-                         danger = c(4,5),
-                         colors = c('red','yellow','green')))
-```
-
-### Global Average Score
-
-```{r}
-gauge(round(mean(data$global_rating_score),
-            digits = 2),
-            min = 0,
-            max = 5,
-            gaugeSectors(success = c(0,2),
-                         warning = c(2,4),
-                         danger = c(4,5),
-                         colors = c('red','yellow','green')))
-```
-
-
-### Total Number of Check-Ins
-```{r}
-valueBox(length(data$beer_name),
-         icon = 'glyphicon glyphicon-leaf')
-```
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Top 10 Breweries With Minimum 5 Samples
-
-```{r}
-
 breweriesFormatted <- data %>% select('brewery_name','rating_score') 
   
 breweriesFormatted <- setNames(aggregate(breweriesFormatted[,2], list(breweriesFormatted$brewery_name), mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_name', 'AverageRating'))  
@@ -121,15 +59,79 @@ mergedData <- filter(mergedData, count > 5) %>%
   arrange(desc(AverageRating)) 
 
 mergedData <- setNames(mergedData, c('Brewery','AverageRating','Count')) 
+```
+
+Home
+==================
+
+Row
+------------------
+
+### Data Refreshed July 2021
+
+```{r}
+valueBox(paste('Marcin Beer Data'),
+color = '#063970')
+```
+
+### Unique Breweries
+```{r}
+ss <- 1
+valueBox(length(countBreweries$brewery_name),
+         icon = 'fa-beer')
+```
+
+### Personal Average Score
+
+```{r}
+gauge(round(mean(data$rating_score),
+            digits = 2),
+            min = 0,
+            max = 5,
+            gaugeSectors(success = c(0,2),
+                         warning = c(2,4),
+                         danger = c(4,5),
+                         colors = c('red','yellow','green')))
+```
+
+### Global Average Score of Sample
+
+```{r}
+gauge(round(mean(data$global_rating_score),
+            digits = 2),
+            min = 0,
+            max = 5,
+            gaugeSectors(success = c(0,2),
+                         warning = c(2,4),
+                         danger = c(4,5),
+                         colors = c('red','yellow','green')))
+```
+
+
+### Total Number of Check-Ins
+```{r}
+valueBox(length(data$beer_name),
+         icon = 'fa-pencil')
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Top 12 Breweries With Minimum 5 Samples
+
+```{r}
+
+
   
-mergedData <-  head(mergedData, 10)
+mergedData <-  head(mergedData, 12)
 
 
-
+mergedData$Brewery <- factor(mergedData$Brewery, levels = unique(mergedData$Brewery)[order(mergedData$AverageRating, decreasing = TRUE)])
 
 topBreweryPlot <- plot_ly(mergedData, 
                           x = ~Brewery, 
                           y = ~AverageRating,
+                          ascending = TRUE,
                           type = 'bar') %>%
 layout(showlegend = FALSE)
                           
@@ -138,13 +140,6 @@ topBreweryPlot
 ```
 
 
-### Top States With Minimum 5 Samples
-
-
-```{r}
-
-          
-```
 
 Row
 ---------------------
