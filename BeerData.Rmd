@@ -39,6 +39,24 @@ stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
 ```
 
 ```{r}
+countryRatings <- data %>% select('brewery_country','rating_score')
+
+countryRatings <- setNames(aggregate(countryRatings[,2], list(countryRatings$brewery_country),
+                                     mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_country', 'AverageRating'))  
+
+countCountries <- data %>% group_by(brewery_country) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+countryRatings <- full_join(countryRatings,countCountries, by = 'brewery_country') %>%
+  arrange(desc(AverageRating)) 
+countryRatings <- filter(countryRatings, count > 1)
+countryRatings <- head(countryRatings, 10)
+
+```
+
+
+```{r}
 breweriesFormatted <- data %>% select('brewery_name','rating_score') 
   
 breweriesFormatted <- setNames(aggregate(breweriesFormatted[,2], list(breweriesFormatted$brewery_name), mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_name', 'AverageRating'))  
@@ -144,18 +162,20 @@ topBreweryPlot
 Row
 ---------------------
 
-### Rating vs Time
+
+### Top 10 Countries With Sample Size > 1
 
 ```{r}
+countryRatings$brewery_country <- factor(countryRatings$brewery_country, levels = unique(countryRatings$brewery_country)[order(countryRatings$AverageRating, decreasing = TRUE)])
 
-```
-
-### Country vs Rating
-
-```{r}
-
-                   
-
+topCountryPlot <- plot_ly(countryRatings, 
+                          x = ~brewery_country, 
+                          y = ~AverageRating,
+                          ascending = TRUE,
+                          type = 'bar') %>%
+layout(showlegend = FALSE)
+                          
+topCountryPlot
 
 ```
 
@@ -178,11 +198,12 @@ highchart() %>%
   hc_mapNavigation(enabled = T)
 ```
 
-Table
+Full Rating Table
 ========================
 ```{r}
-dataSummary <- data %>% select('brewery_state','brewery_name', 'beer_name', 'rating_score', 'global_rating_score')
-dataSummary <- setNames(dataSummary, c('Brewery State','Brewery','Beer Name', 'My Rating', 'Global Rating'))
+
+dataSummary <- data %>% select('brewery_name','beer_name','brewery_country', 'brewery_state', 'rating_score', 'global_rating_score')
+dataSummary <- setNames(dataSummary, c('Brewery Name','Beer Name','Brewery Country','Brewery State', 'My Rating', 'Global Rating'))
 
 datatable(dataSummary,
           caption = 'Count of States',
@@ -190,35 +211,11 @@ datatable(dataSummary,
           filter = 'top',
           options= list(pageLength = 25))
 
-```
 
-
-Summary {data-orientation=columns}
-=========================
-
-Column {data-width = 100}
--------------------------
-
-### Maximum Rating
-```{r}
-
-```
-
-### Standard Deviation of Rating
-```{r}
 
 ```
 
 
-
-About Report
-=========================
-
-<b><font face="arial" size="4" color="#000000">Created by Marcin W. Cencek</font></b>
-
-<a href="mailto:marcin.cencek@gmail.com">marcin.cencek@gmail.com</a>
-
-* Fun Project
 
 
 
