@@ -1,0 +1,170 @@
+---
+title: "Marcin Cencek"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    social: ["linkedin"]
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(DT)
+library(rpivotTable)
+library(ggplot2)
+library(openintro)
+library(highcharter)
+library(dplyr)
+library(tidyverse)
+
+
+
+```
+
+```{r}
+data <- read.csv("~/Desktop/R/BeerProject/data.csv")
+```
+
+
+```{r}
+stateCount <- data %>% group_by(brewery_state) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
+
+```
+
+```{r}
+mycolors <- c("blue","#FFC125","darkgreen","darkorange")
+```
+
+Home
+==================
+
+Row
+------------------
+
+### Data
+
+```{r}
+valueBox(paste('Data July 2021'),
+color = 'olivedrab')
+```
+
+### Highest Brewery
+```{r}
+valueBox(max(stateCount$brewery_state),
+         icon = 'glyphicon-exclamation-sign')
+```
+
+### Overall Average Score
+
+```{r}
+gauge(round(mean(data$rating_score),
+            digits = 2),
+            min = 0,
+            max = 5,
+            gaugeSectors(success = c(0,2),
+                         warning = c(2,4),
+                         danger = c(4,5),
+                         colors = c('red','yellow','green')))
+```
+
+
+### Total Number of Check-Ins
+```{r}
+valueBox(length(data$beer_name),
+         icon = 'glyphicon glyphicon-plane')
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Top Breweries With Minimum 5 Samples
+
+```{r}
+
+          
+```
+
+
+### Top States With Minimum 5 Samples
+
+
+```{r}
+
+          
+```
+
+Row
+---------------------
+
+### Rating vs Time
+
+```{r}
+
+```
+
+### Country vs Rating
+
+```{r}
+
+                   
+
+
+```
+
+Map
+=========================
+
+
+```{r}
+
+s <- map_data('state')
+
+
+highchart() %>%
+  hc_title(text = "Count of Beers by State") %>%
+  hc_subtitle(text = "Heatmap") %>%
+  hc_add_series_map(usgeojson, stateCount,
+                    name = 'brewery_state',
+                    value = 'count',
+                    joinBy = c("woename", "brewery_state")) %>%
+  hc_mapNavigation(enabled = T)
+```
+
+
+
+Summary {data-orientation=columns}
+=========================
+
+Column {data-width = 100}
+-------------------------
+
+### Maximum Rating
+```{r}
+
+```
+
+### Standard Deviation of Rating
+```{r}
+
+```
+
+
+
+About Report
+=========================
+
+<b><font face="arial" size="4" color="#000000">Created by Marcin W. Cencek</font></b>
+
+<a href="mailto:marcin.cencek@gmail.com">marcin.cencek@gmail.com</a>
+
+* Fun Project
+
+
+
+
