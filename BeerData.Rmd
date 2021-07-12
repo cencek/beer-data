@@ -136,6 +136,19 @@ highchart() %>%
   hc_mapNavigation(enabled = T)
 ```
 
+Table
+========================
+```{r}
+dataSummary <- data %>% select('brewery_state','brewery_name', 'beer_name', 'rating_score', 'global_rating_score')
+dataSummary <- setNames(dataSummary, c('Brewery State','Brewery','Beer Name', 'My Rating', 'Global Rating'))
+
+datatable(dataSummary,
+          caption = 'Count of States',
+          rownames = T,
+          filter = 'top',
+          options= list(pageLength = 25))
+
+```
 
 
 Summary {data-orientation=columns}
