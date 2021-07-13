@@ -30,8 +30,9 @@ data <- read.csv("~/Documents/GitHub/beer-data/data.csv")
 
 
 ```{r}
+
 stateCount <- data %>% group_by(brewery_state) %>%
-  summarize(count = n()) %>%
+  dplyr::summarize(count = n()) %>%
   arrange(desc(count))
 
 stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
@@ -44,7 +45,7 @@ dat <- iso3166
 
 
 countryCount <- data %>% group_by(brewery_country) %>%
-  summarize(count = n()) %>%
+  dplyr::summarize(count = n()) %>%
   arrange(desc(count))
 
 
@@ -59,7 +60,7 @@ countryRatings <- setNames(aggregate(countryRatings[,2], list(countryRatings$bre
                                      mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_country', 'AverageRating'))  
 
 countCountries <- data %>% group_by(brewery_country) %>%
-  summarize(count = n()) %>%
+  dplyr::summarize(count = n()) %>%
   arrange(desc(count))
 
 countryRatings <- full_join(countryRatings,countCountries, by = 'brewery_country') %>%
@@ -81,7 +82,7 @@ topBreweries <- breweriesFormatted
 topBreweries <- breweriesFormatted[order(-topBreweries$AverageRating), ]
 
 countBreweries <- data %>% group_by(brewery_name) %>%
-  summarize(count = n()) %>%
+  dplyr::summarize(count = n()) %>%
   arrange(desc(count))
 
 mergedData <-
@@ -211,6 +212,10 @@ highchart() %>%
                     joinBy = c("woename", "brewery_state")) %>%
   hc_colorAxis(minColor = "wheat", maxColor = "darkgreen") %>%
   hc_mapNavigation(enabled = T)
+
+
+
+
 ```
 
 World Map
@@ -238,7 +243,7 @@ dataSummary <- data %>% select('brewery_name','beer_name','brewery_country', 'br
 dataSummary <- setNames(dataSummary, c('Brewery Name','Beer Name','Brewery Country','Brewery State', 'My Rating', 'Global Rating'))
 
 datatable(dataSummary,
-          caption = 'Count of States',
+          caption = 'Full Ratings Table',
           rownames = T,
           filter = 'top',
           options= list(pageLength = 25))
@@ -246,6 +251,32 @@ datatable(dataSummary,
 
 
 ```
+
+State Count
+========================
+```{r}
+
+
+stateCount <- stateCount %>% drop_na()
+
+stateNames <- data.frame(state.name)
+
+
+stateCount <- setNames(stateCount, c('state.name', 'Count'))
+stateMetrics <- full_join(stateNames, stateCount, 'state.name')
+stateMetrics <- stateMetrics %>% dplyr::mutate(Count = replace_na(Count, 0))
+stateMetrics <- setNames(stateMetrics, c('State Name', 'Count'))
+
+
+
+datatable(stateMetrics,
+          caption = 'Count of Unique Beers per State',
+          rownames = T,
+          filter = 'top',
+          options = list(pageLength = 51))
+
+```
+
 
 
 
