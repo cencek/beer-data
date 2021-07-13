@@ -19,7 +19,7 @@ library(highcharter)
 library(dplyr)
 library(tidyverse)
 library(plotly)
-
+library(maps)
 
 
 ```
@@ -37,6 +37,20 @@ stateCount <- data %>% group_by(brewery_state) %>%
 stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
 
 ```
+
+```{r}
+
+dat <- iso3166
+
+
+countryCount <- data %>% group_by(brewery_country) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count))
+
+
+```
+
+
 
 ```{r}
 countryRatings <- data %>% select('brewery_country','rating_score')
@@ -179,7 +193,7 @@ topCountryPlot
 
 ```
 
-Map
+US State Map
 =========================
 
 
@@ -195,6 +209,24 @@ highchart() %>%
                     name = 'brewery_state',
                     value = 'count',
                     joinBy = c("woename", "brewery_state")) %>%
+  hc_colorAxis(minColor = "wheat", maxColor = "darkgreen") %>%
+  hc_mapNavigation(enabled = T)
+```
+
+World Map
+=========================
+```{r}
+
+  
+highchart() %>%
+  hc_title(text = "Count of Beers by Country") %>%
+  hc_subtitle(text = "Heatmap") %>%
+  hc_add_series_map(worldgeojson, (countryCount %>% 
+  mutate(brewery_country = replace(brewery_country, brewery_country == 'United States', 'United States of America'))),
+                    name = 'brewery_country',
+                    value = 'count',
+                    joinBy = c("name", "brewery_country")) %>%
+  hc_colorAxis(minColor = "green", maxColor = "darkgreen") %>%
   hc_mapNavigation(enabled = T)
 ```
 
