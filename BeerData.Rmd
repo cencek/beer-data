@@ -65,7 +65,7 @@ countCountries <- data %>% group_by(brewery_country) %>%
 
 countryRatings <- full_join(countryRatings,countCountries, by = 'brewery_country') %>%
   arrange(desc(AverageRating)) 
-countryRatings <- filter(countryRatings, count > 1)
+countryRatings <- filter(countryRatings, count > 2)
 countryRatings <- head(countryRatings, 10)
 
 ```
@@ -178,7 +178,7 @@ Row
 ---------------------
 
 
-### Top 10 Countries With Sample Size > 1
+### Top Countries With Sample Size > 2
 
 ```{r}
 countryRatings$brewery_country <- factor(countryRatings$brewery_country, levels = unique(countryRatings$brewery_country)[order(countryRatings$AverageRating, decreasing = TRUE)])
@@ -240,6 +240,16 @@ Full Rating Table
 ```{r}
 
 dataSummary <- data %>% select('brewery_name','beer_name','brewery_country', 'brewery_state', 'rating_score', 'global_rating_score')
+
+dataSummary <- data.frame(
+  dataSummary$brewery_name,
+  dataSummary$beer_name,
+  dataSummary$brewery_country,
+  abbr2state(data$brewery_state),
+  dataSummary$rating_score,
+  dataSummary$global_rating_score)
+  
+
 dataSummary <- setNames(dataSummary, c('Brewery Name','Beer Name','Brewery Country','Brewery State', 'My Rating', 'Global Rating'))
 
 datatable(dataSummary,
@@ -247,6 +257,9 @@ datatable(dataSummary,
           rownames = T,
           filter = 'top',
           options= list(pageLength = 25))
+
+
+
 
 
 
