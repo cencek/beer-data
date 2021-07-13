@@ -174,10 +174,6 @@ topBreweryPlot
 
 
 
-Row
----------------------
-
-
 ### Top Countries With Sample Size > 2
 
 ```{r}
@@ -188,9 +184,67 @@ topCountryPlot <- plot_ly(countryRatings,
                           y = ~AverageRating,
                           ascending = TRUE,
                           type = 'bar') %>%
+  layout(         xaxis = list(title = "Country"),
+                  yaxis = list(title = "Average Rating")
+         ) %>%
 layout(showlegend = FALSE)
                           
 topCountryPlot
+
+```
+
+Row
+-------------------------
+
+### Distribution of Ratings, top 5 Breweries
+
+```{r}
+
+GrimmRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Grimm Artisanal Ales')
+EPRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Elder Pine Brewing & Blending')
+AdroitRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Adroit Theory')
+TARatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Tripping Animals Brewing Co.')
+BurialRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Burial Beer Co.')
+EquilibriumRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Equilibrium Brewery')
+BurleyRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Burley Oak Brewing Company')
+NepentheRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Nepenthe Brewing Co.')
+OHRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Other Half Brewing Co.')
+AveryRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Avery Brewing Co.')
+
+GrimmRatings <-setNames(GrimmRatings, c('Brewery Name','Rating')) 
+EPRatings <-setNames(EPRatings, c('Brewery Name','Rating')) 
+AdroitRatings <-setNames(AdroitRatings, c('Brewery Name','Rating')) 
+TARatings <-setNames(TARatings, c('Brewery Name','Rating')) 
+BurialRatings <-setNames(BurialRatings, c('Brewery Name','Rating')) 
+EquilibriumRatings <-setNames(EquilibriumRatings, c('Brewery Name','Rating')) 
+BurleyRatings <-setNames(BurleyRatings, c('Brewery Name','Rating')) 
+NepentheRatings <-setNames(NepentheRatings, c('Brewery Name','Rating')) 
+OHRatings <-setNames(OHRatings, c('Brewery Name','Rating')) 
+AveryRatings <-setNames(AveryRatings, c('Brewery Name','Rating')) 
+
+
+beerBox <- plot_ly(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
+beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
+beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
+beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
+beerBox <- beerBox %>% add_trace(y = BurialRatings$Rating, type = "box", name = 'Burial')
+beerBox <- beerBox %>% add_trace(y = EquilibriumRatings$Rating, type = "box", name = 'Equilibrium')
+beerBox <- beerBox %>% add_trace(y = BurleyRatings$Rating, type = "box", name = 'Burley Oak')
+beerBox <- beerBox %>% add_trace(y = NepentheRatings$Rating, type = "box", name = 'Nepenthe')
+beerBox <- beerBox %>% add_trace(y = OHRatings$Rating, type = "box", name = 'Other Half')
+beerBox <- beerBox %>% add_trace(y = AveryRatings$Rating, type = "box", name = 'Avery')
+
+beerBox
 
 ```
 
