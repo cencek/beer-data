@@ -164,6 +164,8 @@ topBreweryPlot <- plot_ly(mergedData,
                           x = ~Brewery, 
                           y = ~AverageRating,
                           ascending = TRUE,
+                          text = ~AverageRating,
+                          textposition = 'auto',
                           type = 'bar') %>%
 layout(showlegend = FALSE)
                           
@@ -182,6 +184,8 @@ topCountryPlot <- plot_ly(countryRatings,
                           x = ~brewery_country, 
                           y = ~AverageRating,
                           ascending = TRUE,
+                          text = ~AverageRating,
+                          textposition = 'auto',
                           type = 'bar') %>%
   layout(         xaxis = list(title = "Country"),
                   yaxis = list(title = "Average Rating")
@@ -195,7 +199,7 @@ topCountryPlot
 Row
 -------------------------
 
-### Distribution of Ratings, top 5 Breweries
+### Distribution of Ratings, Top 10 Breweries
 
 ```{r}
 
@@ -300,10 +304,11 @@ dataSummary <- data.frame(
   dataSummary$brewery_country,
   abbr2state(data$brewery_state),
   dataSummary$rating_score,
-  dataSummary$global_rating_score)
+  dataSummary$global_rating_score,
+  round(abs((dataSummary$global_rating_score)-(dataSummary$rating_score)), digits = 2))
   
 
-dataSummary <- setNames(dataSummary, c('Brewery Name','Beer Name','Brewery Country','Brewery State', 'My Rating', 'Global Rating'))
+dataSummary <- setNames(dataSummary, c('Brewery Name','Beer Name','Brewery Country','Brewery State', 'My Rating', 'Global Rating', 'Rating Difference'))
 
 datatable(dataSummary,
           caption = 'Full Ratings Table',
