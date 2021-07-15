@@ -56,10 +56,10 @@ countryCount <- data %>% group_by(brewery_country) %>%
 
 
 ```{r}
-countryRatings <- data %>% select('brewery_country','rating_score')
+countryRatings <- data %>% select('brewery_country','rating_score','global_rating_score')
 
-countryRatings <- setNames(aggregate(countryRatings[,2], list(countryRatings$brewery_country),
-                                     mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_country', 'AverageRating'))  
+countryRatings <- setNames(aggregate(countryRatings[,2:3], list(countryRatings$brewery_country),
+                                     mean) %>% mutate_if(is.numeric, round, digits=2), c('brewery_country', 'AverageRating', 'GlobalRating'))  
 
 countCountries <- data %>% group_by(brewery_country) %>%
   dplyr::summarize(count = n()) %>%
@@ -67,7 +67,7 @@ countCountries <- data %>% group_by(brewery_country) %>%
 
 countryRatings <- full_join(countryRatings,countCountries, by = 'brewery_country') %>%
   arrange(desc(AverageRating)) 
-countryRatings <- filter(countryRatings, count > 2)
+countryRatings <- filter(countryRatings, count >= 5)
 countryRatings <- head(countryRatings, 10)
 
 ```
@@ -188,6 +188,9 @@ topBreweryPlot <- plot_ly(mergedData,
                           text = ~AverageRating,
                           textposition = 'auto',
                           type = 'bar') %>%
+  layout(         xaxis = list(title = "Brewery"),
+                  yaxis = list(title = "Average Rating") 
+                  ) %>%
 layout(showlegend = FALSE)
                           
 topBreweryPlot
@@ -196,7 +199,7 @@ topBreweryPlot
 
 
 
-### Top Countries With Sample Size > 2
+### Top Countries With Sample Size 5 or More
 
 ```{r}
 countryRatings$brewery_country <- factor(countryRatings$brewery_country, levels = unique(countryRatings$brewery_country)[order(countryRatings$AverageRating, decreasing = TRUE)])
@@ -205,14 +208,19 @@ topCountryPlot <- plot_ly(countryRatings,
                           x = ~brewery_country, 
                           y = ~AverageRating,
                           ascending = TRUE,
-                          text = ~AverageRating,
-                          textposition = 'auto',
+                          name = 'Personal Rating',
                           type = 'bar') %>%
   layout(         xaxis = list(title = "Country"),
                   yaxis = list(title = "Average Rating")
          ) %>%
-layout(showlegend = FALSE)
-                          
+layout(showlegend = TRUE)
+
+        
+topCountryPlot <- topCountryPlot %>% 
+  add_trace(y = ~GlobalRating,
+            name = 'Global Rating')
+  
+
 topCountryPlot
 
 ```
