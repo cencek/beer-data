@@ -236,8 +236,8 @@ OHRatings <-setNames(OHRatings, c('Brewery Name','Rating'))
 AveryRatings <-setNames(AveryRatings, c('Brewery Name','Rating')) 
 
 
-beerBox <- plot_ly(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
-beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
+beerBox <- plot_ly(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
+beerBox <- beerBox %>% add_trace(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
 beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
 beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
 beerBox <- beerBox %>% add_trace(y = BurialRatings$Rating, type = "box", name = 'Burial')
@@ -267,7 +267,7 @@ highchart() %>%
                     name = 'brewery_state',
                     value = 'count',
                     joinBy = c("woename", "brewery_state")) %>%
-  hc_colorAxis(minColor = "wheat", maxColor = "darkgreen") %>%
+  hc_colorAxis(minColor = "#30c95c", maxColor = "darkgreen") %>%
   hc_mapNavigation(enabled = T)
 
 
