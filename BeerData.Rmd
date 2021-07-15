@@ -305,7 +305,8 @@ highchart() %>%
   hc_title(text = "Count of Beers by Country") %>%
   hc_subtitle(text = "Heatmap") %>%
   hc_add_series_map(worldgeojson, (countryCount %>% 
-  mutate(brewery_country = replace(brewery_country, brewery_country == 'United States', 'United States of America'))),
+  mutate(brewery_country = replace(brewery_country, brewery_country == 'United States', 'United States of America')) 
+   %>% mutate(brewery_country = replace(brewery_country, brewery_country == 'England', 'United Kingdom'))),
                     name = 'brewery_country',
                     value = 'count',
                     joinBy = c("name", "brewery_country")) %>%
