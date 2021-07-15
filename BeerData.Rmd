@@ -232,6 +232,8 @@ Row
 
 ```{r}
 
+### Sorry, these are hard-coded for now :-)
+
 GrimmRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Grimm Artisanal Ales')
 EPRatings <-data.frame(data$brewery_name, data$rating_score) %>%
@@ -252,6 +254,8 @@ OHRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Other Half Brewing Co.')
 AveryRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Avery Brewing Co.')
+
+### These too ;-)
 
 GrimmRatings <-setNames(GrimmRatings, c('Brewery Name','Rating')) 
 EPRatings <-setNames(EPRatings, c('Brewery Name','Rating')) 
