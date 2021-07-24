@@ -54,6 +54,16 @@ countryCount <- data %>% group_by(brewery_country) %>%
 ```
 
 
+```{r}
+
+styleSummary <- data %>% select('beer_type','rating_score') %>%
+  group_by(beer_type) %>%
+  dplyr::summarize(count = n()) %>%
+  arrange(desc(count))
+
+
+```
+
 
 ```{r}
 countryRatings <- data %>% select('brewery_country','rating_score','global_rating_score')
