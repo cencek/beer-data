@@ -25,7 +25,7 @@ library(maps)
 
 ```{r}
 data <- read.csv("~/Documents/GitHub/beer-data/data.csv")
-
+visitData <- read.csv("~/Documents/GitHub/beer-data/visitData.csv")
 ```
 
 
@@ -38,6 +38,12 @@ stateCount <- dataUnique %>% group_by(brewery_state) %>%
   arrange(desc(count))
 
 stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
+
+stateCountVisited <- visitData %>% group_by(brewery_state) %>%
+  dplyr::summarize(count = n()) %>%
+  arrange(desc(count))
+
+stateCountVisited$brewery_state <- abbr2state(stateCountVisited$brewery_state)
 
 ```
 
@@ -334,6 +340,27 @@ highchart() %>%
                     joinBy = c("name", "brewery_country")) %>%
   hc_colorAxis(minColor = "green", maxColor = "darkgreen") %>%
   hc_mapNavigation(enabled = T)
+```
+
+
+```{r}
+
+### s <- map_data('state')
+
+
+### highchart() %>%
+###  hc_title(text = "Count of Beers by State") %>%
+###  hc_subtitle(text = "Heatmap") %>%
+###  hc_add_series_map(usgeojson, stateCountVisited,
+###                    name = 'brewery_state',
+#                    value = 'count',
+#                    joinBy = c("woename", "brewery_state")) %>%
+#  hc_colorAxis(minColor = "#30c95c", maxColor = "darkgreen") %>%
+#  hc_mapNavigation(enabled = T)
+
+
+
+
 ```
 
 Full Rating Table
