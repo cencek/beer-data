@@ -5,6 +5,7 @@ output:
     orientation: rows
     vertical_layout: fill
     source_code: embed
+    theme: 'bootstrap'
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +26,7 @@ library(maps)
 
 ```{r}
 data <- read.csv("~/Documents/GitHub/beer-data/data.csv")
-visitData <- read.csv("~/Documents/GitHub/beer-data/visitData.csv")
+#visitData <- read.csv("~/Documents/GitHub/beer-data/visitData.csv")
 ```
 
 
@@ -39,18 +40,15 @@ stateCount <- dataUnique %>% group_by(brewery_state) %>%
 
 stateCount$brewery_state <- abbr2state(stateCount$brewery_state)
 
-stateCountVisited <- visitData %>% group_by(brewery_state) %>%
-  dplyr::summarize(count = n()) %>%
-  arrange(desc(count))
+#stateCountVisited <- visitData %>% group_by(brewery_state) %>%
+#  dplyr::summarize(count = n()) %>%
+#  arrange(desc(count))
 
-stateCountVisited$brewery_state <- abbr2state(stateCountVisited$brewery_state)
+# stateCountVisited$brewery_state <- abbr2state(stateCountVisited$brewery_state)
 
 ```
 
 ```{r}
-
-dat <- iso3166
-
 
 countryCount <- data %>% group_by(brewery_country) %>%
   dplyr::summarize(count = n()) %>%
@@ -59,16 +57,20 @@ countryCount <- data %>% group_by(brewery_country) %>%
 
 ```
 
-
 ```{r}
 
-styleSummary <- data %>% select('beer_type','rating_score') %>%
-  group_by(beer_type) %>%
+typeCount <- data %>% select('beer_type','rating_score')
+typeCount <- typeCount %>%
+mutate(beer_type = replace(beer_type, beer_type == 'Sour - Fruited', 'Sour')) %>%
+  mutate(beer_type = replace(beer_type, beer_type == '*IPA*', 'IPA'))
+
+typeCount <- data %>% group_by(beer_type) %>%
   dplyr::summarize(count = n()) %>%
   arrange(desc(count))
 
 
 ```
+
 
 
 ```{r}
@@ -110,13 +112,7 @@ countBreweries <- data %>% group_by(brewery_name) %>%
   dplyr::summarize(count = n()) %>%
   arrange(desc(count))
 
-mergedData <-
-  full_join(topBreweries,countBreweries, by = 'brewery_name') 
 
-mergedData <- filter(mergedData, count > 5) %>%
-  arrange(desc(AverageRating)) 
-
-mergedData <- setNames(mergedData, c('Brewery','AverageRating','Count')) 
 ```
 
 Home
@@ -125,11 +121,11 @@ Home
 Row
 ------------------
 
-### Data Refreshed July 2021
+### Data Refreshed August 18, 2021
 
 ```{r}
 valueBox(paste('Marcin Beer Data'),
-color = '#063970')
+color = '#7e868f')
 ```
 
 ### Unique Breweries
@@ -186,13 +182,19 @@ valueBox(length(data$beer_name),
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Top 12 Breweries With Minimum 5 Samples
+### Top 15 Breweries With Minimum 5 Samples
 
 ```{r}
 
+mergedData <-
+  full_join(topBreweries,countBreweries, by = 'brewery_name') 
 
+mergedData <- filter(mergedData, count > 4) %>%
+  arrange(desc(AverageRating)) 
+
+mergedData <- setNames(mergedData, c('Brewery','AverageRating','Count')) 
   
-mergedData <-  head(mergedData, 12)
+mergedData <-  head(mergedData, 15)
 
 
 mergedData$Brewery <- factor(mergedData$Brewery, levels = unique(mergedData$Brewery)[order(mergedData$AverageRating, decreasing = TRUE)])
@@ -244,7 +246,7 @@ topCountryPlot
 Row
 -------------------------
 
-### Distribution of Ratings, Top 10 Breweries
+### Distribution of Ratings, Top 12 Breweries
 
 ```{r}
 
@@ -270,6 +272,10 @@ OHRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Other Half Brewing Co.')
 AveryRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Avery Brewing Co.')
+DrekkerRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Drekker Brewing Company')
+AbominationRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Abomination Brewing Company')
 
 ### These too ;-)
 
@@ -283,12 +289,16 @@ BurleyRatings <-setNames(BurleyRatings, c('Brewery Name','Rating'))
 NepentheRatings <-setNames(NepentheRatings, c('Brewery Name','Rating')) 
 OHRatings <-setNames(OHRatings, c('Brewery Name','Rating')) 
 AveryRatings <-setNames(AveryRatings, c('Brewery Name','Rating')) 
+DrekkerRatings <-setNames(DrekkerRatings, c('Brewery Name','Rating')) 
+AbominationRatings <-setNames(AbominationRatings, c('Brewery Name','Rating')) 
 
 
-beerBox <- plot_ly(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
-beerBox <- beerBox %>% add_trace(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
+beerBox <- plot_ly(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
+beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
+beerBox <- beerBox %>% add_trace(y = DrekkerRatings$Rating, type = "box", name = 'Drekker')
 beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
 beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
+beerBox <- beerBox %>% add_trace(y = AbominationRatings$Rating, type = "box", name = 'Abomination')
 beerBox <- beerBox %>% add_trace(y = BurialRatings$Rating, type = "box", name = 'Burial')
 beerBox <- beerBox %>% add_trace(y = EquilibriumRatings$Rating, type = "box", name = 'Equilibrium')
 beerBox <- beerBox %>% add_trace(y = BurleyRatings$Rating, type = "box", name = 'Burley Oak')
@@ -334,7 +344,8 @@ highchart() %>%
   hc_subtitle(text = "Heatmap") %>%
   hc_add_series_map(worldgeojson, (countryCount %>% 
   mutate(brewery_country = replace(brewery_country, brewery_country == 'United States', 'United States of America')) 
-   %>% mutate(brewery_country = replace(brewery_country, brewery_country == 'England', 'United Kingdom'))),
+   %>% mutate(brewery_country = replace(brewery_country, brewery_country == 'England', 'United Kingdom'))
+   %>% mutate(brewery_country = replace(brewery_country, brewery_country == "China / People's Republic of China", 'China'))),
                     name = 'brewery_country',
                     value = 'count',
                     joinBy = c("name", "brewery_country")) %>%
