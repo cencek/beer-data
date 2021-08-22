@@ -121,7 +121,7 @@ Home
 Row
 ------------------
 
-### Data Refreshed August 18, 2021
+### Data Refreshed August 22, 2021
 
 ```{r}
 valueBox(paste('Marcin Beer Data'),
@@ -276,6 +276,8 @@ DrekkerRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Drekker Brewing Company')
 AbominationRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Abomination Brewing Company')
+GreatNotionRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Great Notion Brewing')
 
 ### These too ;-)
 
@@ -291,11 +293,13 @@ OHRatings <-setNames(OHRatings, c('Brewery Name','Rating'))
 AveryRatings <-setNames(AveryRatings, c('Brewery Name','Rating')) 
 DrekkerRatings <-setNames(DrekkerRatings, c('Brewery Name','Rating')) 
 AbominationRatings <-setNames(AbominationRatings, c('Brewery Name','Rating')) 
+GreatNotionRatings <-setNames(GreatNotionRatings, c('Brewery Name','Rating')) 
 
 
 beerBox <- plot_ly(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
 beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
 beerBox <- beerBox %>% add_trace(y = DrekkerRatings$Rating, type = "box", name = 'Drekker')
+beerBox <- beerBox %>% add_trace(y = GreatNotionRatings$Rating, type = "box", name = 'Great Notion')
 beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
 beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
 beerBox <- beerBox %>% add_trace(y = AbominationRatings$Rating, type = "box", name = 'Abomination')
@@ -304,7 +308,8 @@ beerBox <- beerBox %>% add_trace(y = EquilibriumRatings$Rating, type = "box", na
 beerBox <- beerBox %>% add_trace(y = BurleyRatings$Rating, type = "box", name = 'Burley Oak')
 beerBox <- beerBox %>% add_trace(y = NepentheRatings$Rating, type = "box", name = 'Nepenthe')
 beerBox <- beerBox %>% add_trace(y = OHRatings$Rating, type = "box", name = 'Other Half')
-beerBox <- beerBox %>% add_trace(y = AveryRatings$Rating, type = "box", name = 'Avery')
+
+#beerBox <- beerBox %>% add_trace(y = AveryRatings$Rating, type = "box", name = 'Avery')
 
 beerBox
 
