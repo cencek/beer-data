@@ -12,10 +12,10 @@ output:
 library(flexdashboard)
 library(knitr)
 library(DT)
+library(highcharter)
 library(rpivotTable)
 library(ggplot2)
 library(openintro)
-library(highcharter)
 library(dplyr)
 library(tidyverse)
 library(plotly)
@@ -246,12 +246,14 @@ topCountryPlot
 Row
 -------------------------
 
-### Distribution of Ratings, Top 12 Breweries
+### Distribution of Ratings, Top 15 Breweries
 
 ```{r}
 
 ### Sorry, these are hard-coded for now :-)
 
+TreeHouseRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Tree House Brewing Company')
 GrimmRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Grimm Artisanal Ales')
 EPRatings <-data.frame(data$brewery_name, data$rating_score) %>%
@@ -278,9 +280,14 @@ AbominationRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Abomination Brewing Company')
 GreatNotionRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Great Notion Brewing')
+DeliriumRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Delirium - Huyghe Brewery')
+ToppingGoliathRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Topping Goliath Brewing Co.')
 
 ### These too ;-)
 
+TreeHouseRatings <-setNames(TreeHouseRatings, c('Brewery Name','Rating')) 
 GrimmRatings <-setNames(GrimmRatings, c('Brewery Name','Rating')) 
 EPRatings <-setNames(EPRatings, c('Brewery Name','Rating')) 
 AdroitRatings <-setNames(AdroitRatings, c('Brewery Name','Rating')) 
@@ -294,16 +301,21 @@ AveryRatings <-setNames(AveryRatings, c('Brewery Name','Rating'))
 DrekkerRatings <-setNames(DrekkerRatings, c('Brewery Name','Rating')) 
 AbominationRatings <-setNames(AbominationRatings, c('Brewery Name','Rating')) 
 GreatNotionRatings <-setNames(GreatNotionRatings, c('Brewery Name','Rating')) 
+DeliriumRatings <-setNames(DeliriumRatings, c('Brewery Name','Rating')) 
+ToppingGoliathRatings <-setNames(ToppingGoliathRatings, c('Brewery Name','Rating')) 
 
 
-beerBox <- plot_ly(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
+beerBox <- plot_ly(y = TreeHouseRatings$Rating, type = "box", name = 'Tree House')
+beerBox <- beerBox %>% add_trace(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
 beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
+beerBox <- beerBox %>% add_trace(y = DeliriumRatings$Rating, type = "box", name = 'Delirium')
+beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
 beerBox <- beerBox %>% add_trace(y = DrekkerRatings$Rating, type = "box", name = 'Drekker')
 beerBox <- beerBox %>% add_trace(y = GreatNotionRatings$Rating, type = "box", name = 'Great Notion')
-beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
 beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
-beerBox <- beerBox %>% add_trace(y = AbominationRatings$Rating, type = "box", name = 'Abomination')
 beerBox <- beerBox %>% add_trace(y = BurialRatings$Rating, type = "box", name = 'Burial')
+beerBox <- beerBox %>% add_trace(y = AbominationRatings$Rating, type = "box", name = 'Abomination')
+beerBox <- beerBox %>% add_trace(y = ToppingGoliathRatings$Rating, type = "box", name = 'ToppingGoliathRatings')
 beerBox <- beerBox %>% add_trace(y = EquilibriumRatings$Rating, type = "box", name = 'Equilibrium')
 beerBox <- beerBox %>% add_trace(y = BurleyRatings$Rating, type = "box", name = 'Burley Oak')
 beerBox <- beerBox %>% add_trace(y = NepentheRatings$Rating, type = "box", name = 'Nepenthe')
