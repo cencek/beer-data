@@ -121,7 +121,7 @@ Home
 Row
 ------------------
 
-### Data Refreshed December 15, 2021
+### Data Refreshed January 4, 2021
 
 ```{r}
 valueBox(paste('Marcin Beer Data'),
@@ -284,10 +284,13 @@ DeliriumRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Delirium - Huyghe Brewery')
 ToppingGoliathRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Topping Goliath Brewing Co.')
+AnchorageRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Anchorage Brewing Company')
 
 ### These too ;-)
 
 TreeHouseRatings <-setNames(TreeHouseRatings, c('Brewery Name','Rating')) 
+AnchorageRatings <-setNames(AnchorageRatings, c('Brewery Name','Rating')) 
 GrimmRatings <-setNames(GrimmRatings, c('Brewery Name','Rating')) 
 EPRatings <-setNames(EPRatings, c('Brewery Name','Rating')) 
 AdroitRatings <-setNames(AdroitRatings, c('Brewery Name','Rating')) 
@@ -305,7 +308,8 @@ DeliriumRatings <-setNames(DeliriumRatings, c('Brewery Name','Rating'))
 ToppingGoliathRatings <-setNames(ToppingGoliathRatings, c('Brewery Name','Rating')) 
 
 
-beerBox <- plot_ly(y = TreeHouseRatings$Rating, type = "box", name = 'Tree House')
+beerBox <- plot_ly(y = AnchorageRatings$Rating, type = "box", name = 'Anchorage')
+beerBox <- beerBox %>% add_trace(y = TreeHouseRatings$Rating, type = "box", name = 'Tree House')
 beerBox <- beerBox %>% add_trace(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
 beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
 beerBox <- beerBox %>% add_trace(y = DeliriumRatings$Rating, type = "box", name = 'Delirium')
