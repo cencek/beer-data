@@ -8,6 +8,9 @@ output:
     theme: 'bootstrap'
 ---
 
+
+
+
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(knitr)
@@ -26,6 +29,7 @@ library(maps)
 
 ```{r}
 data <- read.csv("~/Documents/GitHub/beer-data/data.csv")
+DEdata <- read.csv("~/Documents/GitHub/beer-data/delaware-breweries.csv")
 #visitData <- read.csv("~/Documents/GitHub/beer-data/visitData.csv")
 ```
 
@@ -121,7 +125,7 @@ Home
 Row
 ------------------
 
-### Data Refreshed January 4, 2021
+### Data Refreshed July 3, 2022
 
 ```{r}
 valueBox(paste('Marcin Beer Data'),
@@ -246,7 +250,7 @@ topCountryPlot
 Row
 -------------------------
 
-### Distribution of Ratings, Top 15 Breweries
+### Distribution of Ratings, Handpicked 8 Breweries (Personal Favorites)f
 
 ```{r}
 
@@ -286,6 +290,12 @@ ToppingGoliathRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Topping Goliath Brewing Co.')
 AnchorageRatings <-data.frame(data$brewery_name, data$rating_score) %>%
   filter(data.brewery_name == 'Anchorage Brewing Company')
+HudsonValleyRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Hudson Valley Brewery')
+TroonRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == 'Troon Brewing')
+TwoStonesRatings <-data.frame(data$brewery_name, data$rating_score) %>%
+  filter(data.brewery_name == '2SP Brewing Company')
 
 ### These too ;-)
 
@@ -306,25 +316,29 @@ AbominationRatings <-setNames(AbominationRatings, c('Brewery Name','Rating'))
 GreatNotionRatings <-setNames(GreatNotionRatings, c('Brewery Name','Rating')) 
 DeliriumRatings <-setNames(DeliriumRatings, c('Brewery Name','Rating')) 
 ToppingGoliathRatings <-setNames(ToppingGoliathRatings, c('Brewery Name','Rating')) 
+HudsonValleyRatings <-setNames(HudsonValleyRatings, c('Brewery Name','Rating')) 
+TroonRatings <-setNames(TroonRatings, c('Brewery Name','Rating')) 
+TwoStonesRatings <-setNames(TwoStonesRatings, c('Brewery Name','Rating')) 
 
 
-beerBox <- plot_ly(y = AnchorageRatings$Rating, type = "box", name = 'Anchorage')
+beerBox <- plot_ly(y = TroonRatings$Rating, type = "box", name = 'Troon')
+beerBox <- beerBox %>% add_trace(y = AnchorageRatings$Rating, type = "box", name = 'Anchorage')
 beerBox <- beerBox %>% add_trace(y = TreeHouseRatings$Rating, type = "box", name = 'Tree House')
 beerBox <- beerBox %>% add_trace(y = GrimmRatings$Rating, type = "box", name = 'Grimm')
+beerBox <- beerBox %>% add_trace(y = TwoStonesRatings$Rating, type = "box", name = 'Two Stones')
 beerBox <- beerBox %>% add_trace(y = EPRatings$Rating, type = "box", name = 'Elder Pine')
-beerBox <- beerBox %>% add_trace(y = DeliriumRatings$Rating, type = "box", name = 'Delirium')
+#beerBox <- beerBox %>% add_trace(y = DeliriumRatings$Rating, type = "box", name = 'Delirium')
 beerBox <- beerBox %>% add_trace(y = AdroitRatings$Rating, type = "box", name = 'Adroit Theory')
-beerBox <- beerBox %>% add_trace(y = DrekkerRatings$Rating, type = "box", name = 'Drekker')
-beerBox <- beerBox %>% add_trace(y = GreatNotionRatings$Rating, type = "box", name = 'Great Notion')
-beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
-beerBox <- beerBox %>% add_trace(y = BurialRatings$Rating, type = "box", name = 'Burial')
-beerBox <- beerBox %>% add_trace(y = AbominationRatings$Rating, type = "box", name = 'Abomination')
-beerBox <- beerBox %>% add_trace(y = ToppingGoliathRatings$Rating, type = "box", name = 'ToppingGoliathRatings')
-beerBox <- beerBox %>% add_trace(y = EquilibriumRatings$Rating, type = "box", name = 'Equilibrium')
-beerBox <- beerBox %>% add_trace(y = BurleyRatings$Rating, type = "box", name = 'Burley Oak')
-beerBox <- beerBox %>% add_trace(y = NepentheRatings$Rating, type = "box", name = 'Nepenthe')
+#beerBox <- beerBox %>% add_trace(y = DrekkerRatings$Rating, type = "box", name = 'Drekker')
+#beerBox <- beerBox %>% add_trace(y = GreatNotionRatings$Rating, type = "box", name = 'Great Notion')
+#beerBox <- beerBox %>% add_trace(y = TARatings$Rating, type = "box", name = 'Tripping Animals')
+#beerBox <- beerBox %>% add_trace(y = BurialRatings$Rating, type = "box", name = 'Burial')
+#beerBox <- beerBox %>% add_trace(y = AbominationRatings$Rating, type = "box", name = 'Abomination')
+#beerBox <- beerBox %>% add_trace(y = ToppingGoliathRatings$Rating, type = "box", name = 'ToppingGoliathRatings')
+#beerBox <- beerBox %>% add_trace(y = EquilibriumRatings$Rating, type = "box", name = 'Equilibrium')
+#beerBox <- beerBox %>% add_trace(y = BurleyRatings$Rating, type = "box", name = 'Burley Oak')
+#beerBox <- beerBox %>% add_trace(y = NepentheRatings$Rating, type = "box", name = 'Nepenthe')
 beerBox <- beerBox %>% add_trace(y = OHRatings$Rating, type = "box", name = 'Other Half')
-
 #beerBox <- beerBox %>% add_trace(y = AveryRatings$Rating, type = "box", name = 'Avery')
 
 beerBox
@@ -395,9 +409,13 @@ highchart() %>%
 
 ```
 
-Full Rating Table
+Filter Table
 ========================
+Default sorting by global rating
+
 ```{r}
+
+
 
 dataSummary <- data %>% select('brewery_name','beer_name','brewery_country', 'brewery_state', 'rating_score', 'global_rating_score')
 
@@ -420,7 +438,11 @@ datatable(dataSummary,
           caption = 'Full Ratings Table',
           rownames = T,
           filter = 'top',
-          options= list(pageLength = 25))
+          options= list(
+            pageLength = 100,
+            order = list(list(6, 'desc')),
+            scrollY = "700",
+            rowCallback = JS("function(r,d) {$(r).attr('height', '50px')}")))
 
 
 
@@ -450,11 +472,25 @@ datatable(stateMetrics,
           caption = 'Count of Unique Beers per State',
           rownames = T,
           filter = 'top',
-          options = list(pageLength = 51))
+          options = list(pageLength = 52,
+                         scrollY='700px'))
 
 ```
 
+Delaware Breweries
+========================
+```{r}
+datatable(DEdata,
+          caption = 'Full Ratings Table',
+          colname = c('Brewery','Tried?','Visited?','Locations'),
+          rownames = T,
+          filter = 'top',
+          options= list(
+            pageLength = 35,
+            scrollY = "400",
+            rowCallback = JS("function(r,d) {$(r).attr('height', '50px')}"))) 
 
+```
 
 
 
