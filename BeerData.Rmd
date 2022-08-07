@@ -125,7 +125,7 @@ Home
 Row
 ------------------
 
-### Data Refreshed July 3, 2022
+### Data Refreshed August 7, 2022
 
 ```{r}
 valueBox(paste('Marcin Beer Data'),
@@ -250,7 +250,7 @@ topCountryPlot
 Row
 -------------------------
 
-### Distribution of Ratings, Handpicked 8 Breweries (Personal Favorites)f
+### Distribution of Ratings, Handpicked 8 Breweries (Personal Favorites)
 
 ```{r}
 
@@ -480,15 +480,23 @@ datatable(stateMetrics,
 Delaware Breweries
 ========================
 ```{r}
+DEdata <- read.csv("~/Documents/GitHub/beer-data/delaware-breweries.csv")
+DEdata <- merge(topBreweries, DEdata, by = 'brewery_name', all.y = TRUE) 
+
+
 datatable(DEdata,
           caption = 'Full Ratings Table',
-          colname = c('Brewery','Tried?','Visited?','Locations'),
+          colname = c('Brewery','Personal Rating','Tried?','Visited?','Locations'),
           rownames = T,
           filter = 'top',
           options= list(
             pageLength = 35,
             scrollY = "400",
             rowCallback = JS("function(r,d) {$(r).attr('height', '50px')}"))) 
+
+
+
+
 
 ```
 
